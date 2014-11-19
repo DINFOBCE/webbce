@@ -1,0 +1,1610 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EstadoCuentaCliente" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.331000000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#F0F0F0"/>
+			<bottomPen lineWidth="0.5" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#F0F0F0"/>
+			<bottomPen lineWidth="0.5" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#F0F0F0"/>
+			<bottomPen lineWidth="0.5" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3">
+		<box>
+			<pen lineWidth="1.0" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<style name="table 3_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<style name="table 3_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<style name="table 3_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#F0F0F0"/>
+		</box>
+	</style>
+	<subDataset name="Detalle">
+		<parameter name="CodAnexo" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[declare @idanexo int, @idEmpresa int,@codanexo varchar(20)
+set @codanexo =   $P{CodAnexo}
+set @idanexo = (select dbo.anexo.idanexo from anexo where dbo.anexo.codanexo = @codanexo)
+set @idempresa = 1
+
+SELECT TOP 10
+dbo.Documento.FechaEmision,
+CASE WHEN Documento.IdDocumento = 0 THEN Documento.CodDocumento ELSE CASE WHEN Documento.IdDocumentoSerie <> 0 THEN DocumentoSerie.CodDocumentoSerie
++ '-' ELSE ISNULL(Documento.SerieDocumento + '-', '') END + Documento.CodDocumento END AS CodDocumento,dbo.DocumentoTipo.CodDocumentoTipo, 
+CASE WHEN IdAnexo_Emisor = 0 THEN NULL ELSE Anexo_Emisor.CodAnexoVenta END AS CodAnexo_Emisor, 
+CASE WHEN IdAnexo_Concesionario = 0 THEN NULL ELSE Anexo_Concesionario.CodAnexo END AS CodAnexo_Concesionario,
+CASE WHEN dbo.Documento.IdAnexo_Concesionario <> 0 THEN Anexo_Concesionario.NomAnexo ELSE CASE WHEN dbo.Documento.IdAnexo_Emisor <>
+0 THEN Anexo_Emisor.NomAnexo ELSE CASE WHEN dbo.Documento.Referencia IS NULL OR
+dbo.Documento.Referencia = '' THEN dbo.DocumentoTipo.NomDocumentoTipo ELSE dbo.Documento.Referencia END END END AS Descripcion, 
+CASE WHEN dbo.DocumentoTipo.EsInverso = 1 THEN - dbo.funObtenerMontoRestanteDocumentoCuota(dbo.Documento.IdDocumento, 
+dbo.DocumentoCuota.NroCuota, dbo.CreditoPeriodo.FechaInicio) ELSE dbo.funObtenerMontoRestanteDocumentoCuota(dbo.Documento.IdDocumento, 
+dbo.DocumentoCuota.NroCuota, dbo.CreditoPeriodo.FechaInicio) END AS Importe, 
+
+CASE WHEN (dbo.DocumentoCuota.MontoCuota - dbo.DocumentoCuota.MontoCuotaCancelado) 
+= 0 THEN dbo.Documento.NroCuota - dbo.DocumentoCuota.NroCuota ELSE dbo.Documento.NroCuota - dbo.DocumentoCuota.NroCuota + 1 END AS NroCuota
+,
+CASE WHEN dbo.DocumentoTipo.EsInverso = 1 THEN - (dbo.DocumentoCuota.MontoCuota - dbo.DocumentoCuota.MontoCuotaCancelado) 
+ELSE (dbo.DocumentoCuota.MontoCuota - dbo.DocumentoCuota.MontoCuotaCancelado) END AS MontoCuota, 1 AS Tipo, 
+dbo.Documento.FechaEmision AS FechaOrden
+FROM         dbo.Documento  (NOLOCK)  INNER JOIN
+dbo.DocumentoCuota (NOLOCK)  ON dbo.Documento.IdDocumento = dbo.DocumentoCuota.IdDocumento INNER JOIN
+dbo.DocumentoTipo (NOLOCK)  ON CASE WHEN Documento.IdDocumentoTipo = dbo.fneIdDocumentoTipo('TRDA') THEN Documento.IdDocumentoTipo_Referencia ELSE Documento.IdDocumentoTipo END  = dbo.DocumentoTipo.IdDocumentoTipo INNER JOIN
+dbo.DocumentoSerie (NOLOCK)  ON dbo.Documento.IdDocumentoSerie = dbo.DocumentoSerie.IdDocumentoSerie INNER JOIN
+dbo.Anexo Anexo_Concesionario  (NOLOCK)  ON dbo.Documento.IdAnexo_Concesionario = Anexo_Concesionario.IdAnexo INNER JOIN
+dbo.Anexo Anexo_Emisor (NOLOCK)  ON dbo.Documento.IdAnexo_Emisor = Anexo_Emisor.IdAnexo INNER JOIN
+dbo.CreditoPeriodo (NOLOCK)  ON dbo.Documento.FechaEmision < dbo.CreditoPeriodo.FechaInicio
+INNER JOIN
+dbo.DocumentoTipoFamiliaTD(NOLOCK)  ON dbo.DocumentoTipo.IdDocumentoTipoFamilia = dbo.DocumentoTipoFamiliaTD.IdDocumentoTipoFamilia   
+WHERE     (dbo.Documento.Total - dbo.Documento.MontoCancelado + dbo.DocumentoCuota.MontoCuota - dbo.DocumentoCuota.MontoCuotaCancelado <> 0) AND 
+(dbo.CreditoPeriodo.IdCreditoPeriodo = dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AND (dbo.Documento.IdAnexo_ClienteProveedor = @IdAnexo) AND 
+(dbo.DocumentoCuota.FechaVencimiento BETWEEN dbo.CreditoPeriodo.FechaInicio AND dbo.CreditoPeriodo.FechaFin) AND (dbo.Documento.IdEstado not in (dbo.funObtenerEstado('CANCELADO') , dbo.funObtenerEstado('ANULADO'))) AND (dbo.DocumentoTipoFamiliaTD.CodDocumentoTipoFamilia IN ('OV' , 'CV', 'NV', 'CCL'))  
+UNION ALL
+SELECT     NULL AS FechaEmision, NULL AS CodDocumentoTipo, NULL AS CodDocumento, NULL AS CodAnexo_Emisor, NULL AS CodAnexo_Concesionario, NULL 
+AS Descripcion, NULL AS Importe, NULL AS NroCuota, NULL AS MontoCuota, 2 AS Tipo, FechaInicio AS FechaOrden
+FROM         dbo.CreditoPeriodo (NOLOCK) 
+WHERE     (IdCreditoPeriodo = dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa))
+UNION ALL
+SELECT     dbo.Documento.FechaEmision, dbo.DocumentoTipo.CodDocumentoTipo, 
+CASE WHEN Documento.IdDocumento = 0 THEN Documento.CodDocumento ELSE CASE WHEN Documento.IdDocumentoSerie <> 0 THEN DocumentoSerie.CodDocumentoSerie
++ '-' ELSE ISNULL(Documento.SerieDocumento + '-', '') END + Documento.CodDocumento END AS CodDocumento, 
+CASE WHEN IdAnexo_Emisor = 0 THEN NULL ELSE Anexo_Emisor.CodAnexoVenta END AS CodAnexo_Emisor, 
+CASE WHEN IdAnexo_Concesionario = 0 THEN NULL ELSE Anexo_Concesionario.CodAnexo END AS CodAnexo_Concesionario, 
+dbo.DocumentoProducto.Descripcion, 
+CASE WHEN dbo.DocumentoTipo.EsInverso = 1 THEN - fntDocumentoCuotaProducto_Importe.Importe ELSE fntDocumentoCuotaProducto_Importe.Importe
+END AS Importe, 
+CASE WHEN dbo.DocumentoCuotaProducto.MontoCuota - dbo.DocumentoCuotaProducto.MontoCuotaCancelado = 0 THEN dbo.Documento.NroCuota - 1 ELSE
+dbo.Documento.NroCuota END AS NroCuota, 
+CASE WHEN dbo.DocumentoTipo.EsInverso = 1 THEN - (dbo.DocumentoCuotaProducto.MontoCuota - dbo.DocumentoCuotaProducto.MontoCuotaCancelado)
+ELSE (dbo.DocumentoCuotaProducto.MontoCuota - dbo.DocumentoCuotaProducto.MontoCuotaCancelado) END AS MontoCuota, 3 AS Tipo, 
+dbo.Documento.FechaEmision AS FechaOrden
+FROM         dbo.DocumentoProducto WITH (NOLOCK) INNER JOIN
+dbo.Documento WITH (NOLOCK) INNER JOIN
+dbo.DocumentoCuota WITH (NOLOCK) ON dbo.Documento.IdDocumento = dbo.DocumentoCuota.IdDocumento INNER JOIN
+dbo.DocumentoTipo WITH (NOLOCK) ON CASE WHEN Documento.IdDocumentoTipo = dbo.fneIdDocumentoTipo('TRDA') 
+THEN Documento.IdDocumentoTipo_Referencia ELSE Documento.IdDocumentoTipo END = dbo.DocumentoTipo.IdDocumentoTipo INNER JOIN
+dbo.DocumentoSerie WITH (NOLOCK) ON dbo.Documento.IdDocumentoSerie = dbo.DocumentoSerie.IdDocumentoSerie INNER JOIN
+dbo.Anexo Anexo_Concesionario ON dbo.Documento.IdAnexo_Concesionario = Anexo_Concesionario.IdAnexo INNER JOIN
+dbo.Anexo Anexo_Emisor ON dbo.Documento.IdAnexo_Emisor = Anexo_Emisor.IdAnexo INNER JOIN
+dbo.DocumentoCuotaProducto WITH (NOLOCK) ON dbo.DocumentoCuota.IdDocumentoCuota = dbo.DocumentoCuotaProducto.IdDocumentoCuota ON 
+dbo.DocumentoProducto.IdDocumentoProducto = dbo.DocumentoCuotaProducto.IdDocumentoProducto INNER JOIN
+dbo.fntDocumentoCuotaProducto_Importe(@IdAnexo) fntDocumentoCuotaProducto_Importe ON 
+dbo.DocumentoProducto.IdDocumentoProducto =                      fntDocumentoCuotaProducto_Importe.IdDocumentoProducto CROSS JOIN
+dbo.CreditoPeriodo WITH (NOLOCK) INNER JOIN
+dbo.DocumentoTipoFamiliaTD WITH (NOLOCK) ON 
+dbo.DocumentoTipo.IdDocumentoTipoFamilia = dbo.DocumentoTipoFamiliaTD.IdDocumentoTipoFamilia
+WHERE     (dbo.CreditoPeriodo.IdCreditoPeriodo = dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AND (dbo.Documento.IdAnexo_ClienteProveedor = @Idanexo) AND 
+(dbo.Documento.FechaEmision BETWEEN dbo.CreditoPeriodo.FechaInicio AND dbo.CreditoPeriodo.FechaFin) AND (dbo.DocumentoCuota.NroCuota = 1) 
+AND (dbo.Documento.IdEstado NOT IN (dbo.funObtenerEstado('CANCELADO'), dbo.funObtenerEstado('ANULADO'))) AND 
+(dbo.DocumentoTipoFamiliaTD.CodDocumentoTipoFamilia IN ('OV', 'CV', 'NV', 'CCL')) AND 
+(fntDocumentoCuotaProducto_Importe.Importe + dbo.DocumentoCuotaProducto.MontoCuota - dbo.DocumentoCuotaProducto.MontoCuotaCancelado <> 0) 
+ORDER BY FechaOrden, Tipo, CodDocumento]]>
+		</queryString>
+		<field name="FechaEmision" class="java.sql.Timestamp"/>
+		<field name="CodDocumento" class="java.lang.String"/>
+		<field name="CodDocumentoTipo" class="java.lang.String"/>
+		<field name="CodAnexo_Emisor" class="java.lang.String"/>
+		<field name="CodAnexo_Concesionario" class="java.lang.String"/>
+		<field name="Descripcion" class="java.lang.String"/>
+		<field name="Importe" class="java.math.BigDecimal"/>
+		<field name="NroCuota" class="java.lang.Integer"/>
+		<field name="MontoCuota" class="java.math.BigDecimal"/>
+		<field name="Tipo" class="java.lang.Integer"/>
+		<field name="FechaOrden" class="java.sql.Timestamp"/>
+		<variable name="Tot_Importe" class="java.lang.Double" calculation="Sum">
+			<variableExpression><![CDATA[$F{Importe}]]></variableExpression>
+		</variable>
+		<variable name="Tot_DescPro" class="java.lang.Double" calculation="Sum">
+			<variableExpression><![CDATA[$F{MontoCuota}]]></variableExpression>
+		</variable>
+	</subDataset>
+	<parameter name="CodAnexo" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Program Files\\Apache Software Foundation\\Tomcat 7.0\\webapps\\webbce\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[declare @idanexo int, @idEmpresa int, @codanexo VARCHAR (20) 
+SELECT  @codanexo = $P{CodAnexo}
+set @idanexo = (select dbo.anexo.idanexo from anexo where dbo.anexo.codanexo = @codanexo)
+SET @idempresa = 1
+SELECT     
+----------------01------------------------
+dbo.CreditoPeriodo.NomCreditoPeriodo,dbo.CreditoPeriodo.FechaFin, dbo.CreditoPeriodo.FechaInicio,vAnexo_CodyNom.CodAnexo,
+vAnexo_CodyNom.Documento,dbo.Situacion.NomSituacion,vAnexo_CodyNom.NomAnexo, vAnexo_CodyNom.Quinquenio,
+vAnexo_CodyNom.Direccion + N' ' + CASE WHEN vAnexo_CodyNom.IdUbigeo = 0 THEN '' ELSE NomUbigeo END AS Direccion,dbo.Grado.CodGrado,vAnexo_CodyNom.Telefono1,
+dbo.EntidadDescuentoTD.CodEntidadDescuento,vAnexo_CodyNom.Percibo, vAnexo_CodyNom.CreditoOtorgado,vAnexo_CodyNom.CreditoAdicional,vAnexo_CodyNom.CreditoDisminucion,
+vAnexo_CodyNom.CreditoOtorgadoTotal, vAnexo_CodyNom.CreditoAdicionalTotal,vAnexo_CodyNom.CreditoDisminucionTotal,vAnexo_CodyNom.FechaFinContrato, 
+dbo.fnEstadoPagare(@IdAnexo) AS EstadoPagare,	dbo.fneAnexo_Estado(@IdAnexo) AS NomEstado,
+------ 02----
+dbo.fneSaldoAnterior_Importe(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa))AS Importe_Anterior,
+dbo.fneDsctoNP(@IdAnexo, @IdEmpresa,dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS DsctoNP_Anterior, 
+dbo.fneExceso(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS Exceso_Anterior,
+dbo.fneMora(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS Mora_Anterior, 
+dbo.fneSaldoMes_Importe(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS Importe_Mes,
+dbo.fneSaldoAFavor(@IdAnexo, @IdEmpresa,dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS SaldoFavor_Anterior,
+dbo.fneSaldoAnterior_Importe(@IdAnexo, @IdEmpresa, 
+dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) + dbo.fneDsctoNP(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) + dbo.fneExceso(@IdAnexo, @IdEmpresa, 
+dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) + dbo.fneMora(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) + dbo.fneSaldoMes_Importe(@IdAnexo, @IdEmpresa, 
+dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) + dbo.fneSaldoAFavor(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS Total,
+dbo.fneSeparacionRosada_MontoCuota(@IdAnexo,1, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS MontoCuotaRosada,
+dbo.fneSeparacionBanca_MontoCuota(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(),1)) AS MontoCuotaBanca,dbo.fneCreditoDisponible_Anexo(@IdAnexo) AS CreditoDisponible,
+dbo.fneCreditoDisponibleTotal_Anexo(@IdAnexo) AS CreditoDisponibleTotal,dbo.fneAnexoDescuento_FechaFin(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 0) AS Fecha, 
+dbo.fneAnexoDescuento_DescuentoRemitido(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 0, @IdAnexo) AS DescuentoRemitido,
+dbo.fneSaldoAnterior_MontoCuota(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS MontoCuota_Anterior,
+dbo.fneDsctoNP(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS DsctoNP_Mes,dbo.fneExceso(@IdAnexo, @IdEmpresa,dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS Exceso_Mes,
+dbo.fneMora(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa))AS Mora_Mes, dbo.fneSaldoMes_MontoCuota(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS MontoCuota_Mes,
+dbo.fneSaldoAnterior_MontoCuota(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) + dbo.fneDsctoNP(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) 
++ dbo.fneExceso(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) + dbo.fneMora(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) 
++ dbo.fneSaldoMes_MontoCuota(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) AS MontoCuota,
+dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 0) AS CodCreditoPeriodo_0, 
+dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 1) AS CodCreditoPeriodo_1,
+dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 2) AS CodCreditoPeriodo_2, 
+dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 3) AS CodCreditoPeriodo_3, 
+dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 4) AS CodCreditoPeriodo_4, 
+dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 5) AS CodCreditoPeriodo_5, 
+dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 6) AS CodCreditoPeriodo_6,
+dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 7) AS CodCreditoPeriodo_7,
+dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 8) AS CodCreditoPeriodo_8,
+dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 9) AS CodCreditoPeriodo_9,
+dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 10) AS CodCreditoPeriodo_10,
+dbo.fneAnexoDescuento_DescuentoEfectuado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 0, @IdAnexo) AS DescuentoEfectuado_0, 
+dbo.fneAnexoDescuento_DescuentoEfectuado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 1, @IdAnexo) AS DescuentoEfectuado_1, 
+dbo.fneAnexoDescuento_DescuentoEfectuado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 2, @IdAnexo) AS DescuentoEfectuado_2, 
+dbo.fneAnexoDescuento_DescuentoEfectuado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 3, @IdAnexo) AS DescuentoEfectuado_3,
+dbo.fneAnexoDescuento_DescuentoEfectuado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 4, @IdAnexo) AS DescuentoEfectuado_4,
+dbo.fneAnexoDescuento_DescuentoEfectuado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 5, @IdAnexo) AS DescuentoEfectuado_5, 
+dbo.fneAnexoDescuento_DescuentoEfectuado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 6, @IdAnexo) AS DescuentoEfectuado_6,
+dbo.fneAnexoDescuento_DescuentoEfectuado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 7, @IdAnexo) AS DescuentoEfectuado_7,
+dbo.fneAnexoDescuento_DescuentoEfectuado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 8, @IdAnexo) AS DescuentoEfectuado_8,
+dbo.fneAnexoDescuento_DescuentoEfectuado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 9, @IdAnexo) AS DescuentoEfectuado_9,
+dbo.fneAnexoDescuento_DescuentoEfectuado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 10, @IdAnexo) AS DescuentoEfectuado_10, 
+dbo.fneAnexoDescuento_Exceso(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 0, @IdAnexo) AS Exceso_0,    
+dbo.fneAnexoDescuento_Exceso(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 1, @IdAnexo) AS Exceso_1, 
+dbo.fneAnexoDescuento_Exceso(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 2, @IdAnexo) AS Exceso_2, 
+dbo.fneAnexoDescuento_Exceso(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 3, @IdAnexo) AS Exceso_3, 
+dbo.fneAnexoDescuento_Exceso(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 4, @IdAnexo) AS Exceso_4, 
+dbo.fneAnexoDescuento_Exceso(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 5, @IdAnexo) AS Exceso_5, 
+dbo.fneAnexoDescuento_Exceso(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 6, @IdAnexo) AS Exceso_6, 
+dbo.fneAnexoDescuento_Exceso(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 7, @IdAnexo) AS Exceso_7, 
+dbo.fneAnexoDescuento_Exceso(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 8, @IdAnexo) AS Exceso_8, 
+dbo.fneAnexoDescuento_Exceso(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 9, @IdAnexo) AS Exceso_9, 
+dbo.fneAnexoDescuento_Exceso(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 10, @IdAnexo) AS Exceso_10,
+-----03-------------
+    
+	dbo.fneAnexoPagoProyectado_0(@IdAnexo, GETDATE())  AS Proyectado_0,	
+	CASE WHEN dbo.fneSaldoAnterior_MontoCuota(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa))
+	+ dbo.fneDsctoNP(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa))
+	+ dbo.fneExceso(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) 
+	+ dbo.fneMora(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) 
+	+ dbo.fneSaldoMes_MontoCuota(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) =0 THEN 0 ELSE dbo.fneSaldoAnterior_MontoCuota(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) 
+	+ dbo.fneDsctoNP(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa))   
+	+  CASE WHEN dbo.fneConExcesoMora (@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa) ) <>0 THEN 0 ELSE dbo.fneExceso(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) END + CASE WHEN 
+	dbo.fneConExcesoMora (@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa) ) <>0 THEN 0  ELSE dbo.fneMora(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa)) 
+	END  + dbo.fneSaldoMes_MontoCuota(@IdAnexo, @IdEmpresa, dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa))END AS Proyectado, 
+	dbo.fneAnexoPagoProyectado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 1, @IdAnexo) AS Proyectado_1, 
+	dbo.fneAnexoPagoProyectado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 2, @IdAnexo) AS Proyectado_2, 
+	dbo.fneAnexoPagoProyectado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 3, @IdAnexo) AS Proyectado_3, 
+	dbo.fneAnexoPagoProyectado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 4, @IdAnexo) AS Proyectado_4, 
+	dbo.fneAnexoPagoProyectado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 5, @IdAnexo) AS Proyectado_5, 
+	dbo.fneAnexoPagoProyectado(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), 6, @IdAnexo) AS Proyectado_6, 
+	dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), dbo.fneAnexo_NroMes (@IdAnexo,0) ) AS CodCreditoPeriodo0, 
+	dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), dbo.fneAnexo_NroMes (@IdAnexo,-1) ) AS CodCreditoPeriodo, 
+	dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), dbo.fneAnexo_NroMes (@IdAnexo,-2) ) AS CodCreditoPeriodo1, 
+	dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), dbo.fneAnexo_NroMes (@IdAnexo,-3) ) AS CodCreditoPeriodo2, 
+	dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), dbo.fneAnexo_NroMes (@IdAnexo,-4) ) AS CodCreditoPeriodo3, 
+	dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), dbo.fneAnexo_NroMes (@IdAnexo,-5) ) AS CodCreditoPeriodo4, 
+	dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), dbo.fneAnexo_NroMes (@IdAnexo,-6) ) AS CodCreditoPeriodo5, 
+	dbo.fneAnexoDescuento_CodCreditoPeriodo(dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa), dbo.fneAnexo_NroMes (@IdAnexo,-7) ) AS CodCreditoPeriodo6 
+
+FROM   vAnexo_CodyNom (NOLOCK) INNER JOIN
+                      dbo.Grado (NOLOCK) ON vAnexo_CodyNom.IdGrado = dbo.Grado.IdGrado INNER JOIN
+                      dbo.Situacion (NOLOCK) ON vAnexo_CodyNom.IdSituacion = dbo.Situacion.IdSituacion INNER JOIN
+                      dbo.Ubigeo (NOLOCK) ON vAnexo_CodyNom.IdUbigeo = dbo.Ubigeo.IdUbigeo INNER JOIN
+                      dbo.EntidadDescuentoTD (NOLOCK)ON vAnexo_CodyNom.IdEntidadDescuento = dbo.EntidadDescuentoTD.IdEntidadDescuento CROSS JOIN
+                      dbo.CreditoPeriodo (NOLOCK)
+WHERE     (vAnexo_CodyNom.IdAnexo = @IdAnexo) AND (dbo.CreditoPeriodo.IdCreditoPeriodo = dbo.fneCreditoPeriodo(GETDATE(), @IdEmpresa))]]>
+	</queryString>
+	<field name="NomCreditoPeriodo" class="java.lang.String"/>
+	<field name="FechaFin" class="java.sql.Timestamp"/>
+	<field name="FechaInicio" class="java.sql.Timestamp"/>
+	<field name="CodAnexo" class="java.lang.String"/>
+	<field name="Documento" class="java.lang.String"/>
+	<field name="NomSituacion" class="java.lang.String"/>
+	<field name="NomAnexo" class="java.lang.String"/>
+	<field name="Quinquenio" class="java.lang.Integer"/>
+	<field name="Direccion" class="java.lang.String"/>
+	<field name="CodGrado" class="java.lang.String"/>
+	<field name="Telefono1" class="java.lang.String"/>
+	<field name="CodEntidadDescuento" class="java.lang.String"/>
+	<field name="Percibo" class="java.math.BigDecimal"/>
+	<field name="CreditoOtorgado" class="java.math.BigDecimal"/>
+	<field name="CreditoAdicional" class="java.math.BigDecimal"/>
+	<field name="CreditoDisminucion" class="java.math.BigDecimal"/>
+	<field name="CreditoOtorgadoTotal" class="java.math.BigDecimal"/>
+	<field name="CreditoAdicionalTotal" class="java.math.BigDecimal"/>
+	<field name="CreditoDisminucionTotal" class="java.math.BigDecimal"/>
+	<field name="FechaFinContrato" class="java.sql.Timestamp"/>
+	<field name="EstadoPagare" class="java.lang.String"/>
+	<field name="NomEstado" class="java.lang.String"/>
+	<field name="Importe_Anterior" class="java.math.BigDecimal"/>
+	<field name="DsctoNP_Anterior" class="java.math.BigDecimal"/>
+	<field name="Exceso_Anterior" class="java.math.BigDecimal"/>
+	<field name="Mora_Anterior" class="java.math.BigDecimal"/>
+	<field name="Importe_Mes" class="java.math.BigDecimal"/>
+	<field name="SaldoFavor_Anterior" class="java.math.BigDecimal"/>
+	<field name="Total" class="java.math.BigDecimal"/>
+	<field name="MontoCuotaRosada" class="java.math.BigDecimal"/>
+	<field name="MontoCuotaBanca" class="java.math.BigDecimal"/>
+	<field name="CreditoDisponible" class="java.math.BigDecimal"/>
+	<field name="CreditoDisponibleTotal" class="java.math.BigDecimal"/>
+	<field name="Fecha" class="java.sql.Timestamp"/>
+	<field name="DescuentoRemitido" class="java.math.BigDecimal"/>
+	<field name="MontoCuota_Anterior" class="java.math.BigDecimal"/>
+	<field name="DsctoNP_Mes" class="java.math.BigDecimal"/>
+	<field name="Exceso_Mes" class="java.math.BigDecimal"/>
+	<field name="Mora_Mes" class="java.math.BigDecimal"/>
+	<field name="MontoCuota_Mes" class="java.math.BigDecimal"/>
+	<field name="MontoCuota" class="java.math.BigDecimal"/>
+	<field name="CodCreditoPeriodo_0" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo_1" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo_2" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo_3" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo_4" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo_5" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo_6" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo_7" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo_8" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo_9" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo_10" class="java.lang.String"/>
+	<field name="DescuentoEfectuado_0" class="java.math.BigDecimal"/>
+	<field name="DescuentoEfectuado_1" class="java.math.BigDecimal"/>
+	<field name="DescuentoEfectuado_2" class="java.math.BigDecimal"/>
+	<field name="DescuentoEfectuado_3" class="java.math.BigDecimal"/>
+	<field name="DescuentoEfectuado_4" class="java.math.BigDecimal"/>
+	<field name="DescuentoEfectuado_5" class="java.math.BigDecimal"/>
+	<field name="DescuentoEfectuado_6" class="java.math.BigDecimal"/>
+	<field name="DescuentoEfectuado_7" class="java.math.BigDecimal"/>
+	<field name="DescuentoEfectuado_8" class="java.math.BigDecimal"/>
+	<field name="DescuentoEfectuado_9" class="java.math.BigDecimal"/>
+	<field name="DescuentoEfectuado_10" class="java.math.BigDecimal"/>
+	<field name="Exceso_0" class="java.math.BigDecimal"/>
+	<field name="Exceso_1" class="java.math.BigDecimal"/>
+	<field name="Exceso_2" class="java.math.BigDecimal"/>
+	<field name="Exceso_3" class="java.math.BigDecimal"/>
+	<field name="Exceso_4" class="java.math.BigDecimal"/>
+	<field name="Exceso_5" class="java.math.BigDecimal"/>
+	<field name="Exceso_6" class="java.math.BigDecimal"/>
+	<field name="Exceso_7" class="java.math.BigDecimal"/>
+	<field name="Exceso_8" class="java.math.BigDecimal"/>
+	<field name="Exceso_9" class="java.math.BigDecimal"/>
+	<field name="Exceso_10" class="java.math.BigDecimal"/>
+	<field name="Proyectado_0" class="java.math.BigDecimal"/>
+	<field name="Proyectado" class="java.math.BigDecimal"/>
+	<field name="Proyectado_1" class="java.math.BigDecimal"/>
+	<field name="Proyectado_2" class="java.math.BigDecimal"/>
+	<field name="Proyectado_3" class="java.math.BigDecimal"/>
+	<field name="Proyectado_4" class="java.math.BigDecimal"/>
+	<field name="Proyectado_5" class="java.math.BigDecimal"/>
+	<field name="Proyectado_6" class="java.math.BigDecimal"/>
+	<field name="CodCreditoPeriodo0" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo1" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo2" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo3" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo4" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo5" class="java.lang.String"/>
+	<field name="CodCreditoPeriodo6" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="341" splitType="Stretch">
+			<staticText>
+				<reportElement x="2" y="2" width="552" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO DE CUENTA CLIENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="9" y="36" width="78" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Periodo de Ventas:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="96" y="36" width="119" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NomCreditoPeriodo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="366" y="36" width="35" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[F. Fin:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="420" y="36" width="130" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FechaFin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="223" y="36" width="43" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[F. Inicio:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="266" y="36" width="72" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FechaInicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="51" width="50" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[N° Admin:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="96" y="51" width="96" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodAnexo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="223" y="51" width="30" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[DNI:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="266" y="51" width="91" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Documento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="366" y="51" width="45" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Situación:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="420" y="51" width="130" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NomSituacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="63" width="85" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Apellidos y Nombres:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="96" y="63" width="263" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NomAnexo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="366" y="63" width="50" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Quinquenios:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="420" y="63" width="130" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Quinquenio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="77" width="59" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Direccion:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="96" y="77" width="265" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Direccion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="366" y="77" width="32" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Grado:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="420" y="77" width="130" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodGrado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="92" width="56" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Telefono:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="96" y="92" width="84" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Telefono1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="366" y="92" width="50" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Ent. Desc.:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="420" y="92" width="130" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodEntidadDescuento}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="198" y="111" width="347" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EstadoPagare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="115" width="89" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Percibo:	]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="102" y="115" width="64" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Percibo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="131" width="86" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Credito Otorgado:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="102" y="131" width="69" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CreditoOtorgado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="191" y="130" width="49" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Adicional:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="260" y="130" width="65" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CreditoAdicional}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="379" y="129" width="62" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Disminucion:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="464" y="131" width="76" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CreditoDisminucion}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="102" y="145" width="66" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CreditoOtorgadoTotal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="260" y="145" width="65" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CreditoAdicionalTotal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="464" y="145" width="76" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CreditoDisminucionTotal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="140" width="88" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Linea de Credito Total:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="191" y="145" width="70" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Adicional al Tope:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="379" y="145" width="82" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Disminucion al Tope:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="5" y="156" width="548" height="2"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="174" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Importe_Anterior}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="174" width="84" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Saldo anterior:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="27" y="164" width="100" height="12"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[DEUDA A LA FECHA]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="187" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DsctoNP_Anterior}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="187" width="50" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Dscto N/P:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="201" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_Anterior}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="201" width="50" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Exceso:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="219" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Mora_Anterior}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="219" width="55" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Mora:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="9" y="227" width="84" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Deuda del Mes:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="227" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Importe_Mes}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="246" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SaldoFavor_Anterior}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="246" width="80" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Saldo a favor:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="258" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Total}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="258" width="50" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="279" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MontoCuotaRosada}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="279" width="69" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Sep.Externo:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="289" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MontoCuotaBanca}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="289" width="83" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Sep. Banca:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="305" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CreditoDisponible}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="305" width="96" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Credito Disponible:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="319" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CreditoDisponibleTotal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="319" width="97" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Tope Disponible:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="10" y="256" width="151" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="202" y="163" width="100" height="12"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[DESCUENTO CINFE]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="202" y="178" width="100" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="191" y="206" width="131" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[PROXIMO DSCTO PROYECT]]></text>
+			</staticText>
+			<line>
+				<reportElement x="192" y="223" width="124" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="191" y="225" width="63" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[1 Cuota Saldo:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="267" y="225" width="49" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MontoCuota_Anterior}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="191" y="236" width="63" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Dscto N/P:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="267" y="238" width="49" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DsctoNP_Mes}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="191" y="251" width="63" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Exceso:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="267" y="249" width="49" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_Mes}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="191" y="263" width="63" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Mora:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="267" y="263" width="49" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Mora_Mes}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="191" y="277" width="63" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[1 Cuota Mes:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="267" y="276" width="49" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MontoCuota_Mes}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="343" y="165" width="59" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="405" y="165" width="79" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[DESCONTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="486" y="165" width="59" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[EXCESO]]></text>
+			</staticText>
+			<line>
+				<reportElement x="191" y="290" width="124" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="192" y="294" width="33" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="232" y="295" width="83" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MontoCuota}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="350" y="187" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo_10}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="350" y="201" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo_9}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="350" y="215" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo_8}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="350" y="229" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo_7}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="350" y="242" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo_6}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="350" y="254" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo_5}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="350" y="267" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo_4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="350" y="280" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo_3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="350" y="291" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="350" y="304" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo_1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="350" y="315" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo_0}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="417" y="186" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescuentoEfectuado_10}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="417" y="201" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescuentoEfectuado_9}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="417" y="214" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescuentoEfectuado_8}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="417" y="227" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescuentoEfectuado_7}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="417" y="240" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescuentoEfectuado_6}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="417" y="253" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescuentoEfectuado_5}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="417" y="265" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescuentoEfectuado_4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="417" y="278" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescuentoEfectuado_3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="417" y="291" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescuentoEfectuado_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="417" y="304" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescuentoEfectuado_1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="417" y="316" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DescuentoEfectuado_0}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="186" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_10}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="200" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_9}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="214" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_8}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="226" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_7}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="239" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_6}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="253" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_5}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="266" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="481" y="278" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="291" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="480" y="304" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="482" y="316" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Exceso_0}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="5" y="335" width="548" height="2"/>
+			</line>
+		</band>
+	</title>
+	<detail>
+		<band height="112">
+			<elementGroup/>
+			<componentElement>
+				<reportElement key="table 4" positionType="Float" mode="Opaque" x="8" y="14" width="220" height="50" isRemoveLineWhenBlank="true" forecolor="#000000" backcolor="#FFFFFF">
+					<property name="net.sf.jasperreports.export.pdf.tag.td" value="full"/>
+					<propertyExpression name="CodAnexo"><![CDATA[$P{CodAnexo}]]></propertyExpression>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Detalle">
+						<datasetParameter name="CodAnexo">
+							<datasetParameterExpression><![CDATA[$P{CodAnexo}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="46">
+						<jr:columnHeader height="21" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="45" height="21"/>
+								<textElement verticalAlignment="Bottom">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[FECHA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="13" rowSpan="1">
+							<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="45" height="11"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{FechaEmision}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="48">
+						<jr:columnHeader height="21" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="48" height="21"/>
+								<textElement verticalAlignment="Bottom">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[TIPO]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="13" rowSpan="1">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="48" height="11"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{CodDocumentoTipo}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="61">
+						<jr:columnHeader height="21" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="60" height="21"/>
+								<textElement verticalAlignment="Bottom">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[NTA. VENTA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="13" rowSpan="1">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="60" height="11"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{CodDocumento}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="46">
+						<jr:columnHeader height="21" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="45" height="21"/>
+								<textElement verticalAlignment="Bottom">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[P.VENTA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="13" rowSpan="1">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="45" height="11"/>
+								<textElement textAlignment="Center">
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{CodAnexo_Emisor}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="180">
+						<jr:tableFooter height="14" rowSpan="1">
+							<staticText>
+								<reportElement x="77" y="0" width="100" height="11"/>
+								<textElement>
+									<font size="8" isBold="true" isUnderline="true"/>
+								</textElement>
+								<text><![CDATA[TOTALES]]></text>
+							</staticText>
+						</jr:tableFooter>
+						<jr:columnHeader height="21" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="180" height="21"/>
+								<textElement verticalAlignment="Bottom">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[DESCRIPCIÓN]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="13" rowSpan="1">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="180" height="11"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{Descripcion}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="48">
+						<jr:tableFooter height="14" rowSpan="1">
+							<textField pattern="S/ #,##0.00;(S/ -#,##0.00)">
+								<reportElement x="0" y="0" width="48" height="11"/>
+								<textElement textAlignment="Right">
+									<font size="8" isBold="true" isUnderline="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{Tot_Importe}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
+						<jr:columnHeader height="21" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="46" height="21"/>
+								<textElement verticalAlignment="Bottom">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[IMPORTE]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="13" rowSpan="1">
+							<textField pattern="" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="46" height="11"/>
+								<textElement textAlignment="Right">
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{Importe}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="40">
+						<jr:columnHeader height="21" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="38" height="21"/>
+								<textElement verticalAlignment="Bottom">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[CTAS]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="13" rowSpan="1">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="38" height="11"/>
+								<textElement textAlignment="Center">
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{NroCuota}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="62">
+						<jr:tableFooter height="14" rowSpan="1">
+							<textField pattern="S/ #,##0.00;(S/ -#,##0.00)">
+								<reportElement x="0" y="0" width="62" height="11"/>
+								<textElement textAlignment="Right">
+									<font size="8" isBold="true" isUnderline="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{Tot_DescPro}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
+						<jr:columnHeader height="21" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="60" height="21"/>
+								<textElement verticalAlignment="Bottom">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[DESCUENTO 
+PROYECTADO]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="13" rowSpan="1">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="58" height="11"/>
+								<textElement textAlignment="Right">
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{MontoCuota}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<staticText>
+				<reportElement x="2" y="0" width="551" height="11"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE DOCUMENTOS DE VENTA]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement positionType="Float" x="12" y="78" width="509" height="28"/>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" x="14" y="79" width="60" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo0}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="77" y="79" width="60" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="142" y="79" width="60" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="208" y="79" width="60" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="272" y="79" width="60" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="334" y="79" width="60" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="397" y="79" width="60" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="460" y="79" width="60" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CodCreditoPeriodo6}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="12" y="93" width="62" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Proyectado_0}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="75" y="93" width="63" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Proyectado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="139" y="93" width="63" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Proyectado_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="205" y="93" width="61" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Proyectado_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="269" y="93" width="60" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Proyectado_3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="332" y="93" width="60" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Proyectado_4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="396" y="93" width="60" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Proyectado_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="459" y="93" width="61" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Proyectado_6}]]></textFieldExpression>
+			</textField>
+			<line direction="BottomUp">
+				<reportElement positionType="Float" x="74" y="78" width="1" height="28"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="Float" x="139" y="78" width="1" height="28"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="Float" x="204" y="78" width="1" height="28"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="FixRelativeToBottom" x="267" y="78" width="1" height="28"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="FixRelativeToBottom" x="330" y="78" width="1" height="28"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="FixRelativeToBottom" x="393" y="78" width="1" height="28"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="FixRelativeToBottom" x="457" y="78" width="1" height="28"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="12" y="78" width="509" height="1"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="12" y="92" width="509" height="2"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="58">
+			<staticText>
+				<reportElement x="5" y="10" width="547" height="22"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[IMPORTANTE: Este documento es de uso exclusivo del cliente titular y de manera informativa por lo que carece de validez para cualquier tramite o transaccion mientras no cuente con la firma y sello del personal autorizado por la  Direccion de Comercializacion de la ACMP 																				www.bcetubazar.com/]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="123" y="31" width="314" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[www.bcetubazar.com]]></text>
+			</staticText>
+			<line>
+				<reportElement x="6" y="5" width="548" height="2"/>
+			</line>
+			<textField>
+				<reportElement x="476" y="35" width="58" height="10"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pág "+$V{PAGE_NUMBER}+"/"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="535" y="35" width="18" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH.mm.ss">
+				<reportElement x="469" y="46" width="85" height="10" forecolor="#CCCCCC"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="431" y="46" width="38" height="10" forecolor="#CCCCCC"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[F. Consulta:]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+</jasperReport>
