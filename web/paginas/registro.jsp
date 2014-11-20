@@ -62,8 +62,6 @@
 
 			}
 		});
-
-		// propose username by combining first- and lastname
 		$("#username").focus(function() {
 			var firstname = $("#firstname").val();
 			var lastname = $("#lastname").val();
@@ -71,14 +69,10 @@
 				this.value = firstname + "." + lastname;
 			}
 		});
-
-		//code to hide topic selection, disable for demo
 		var newsletter = $("#newsletter");
-		// newsletter topics are optional, hide at first
 		var inital = newsletter.is(":checked");
 		var topics = $("#newsletter_topics")[inital ? "removeClass" : "addClass"]("gray");
 		var topicInputs = topics.find("input").attr("disabled", !inital);
-		// show when newsletter is checked
 		newsletter.click(function() {
 			topics[this.checked ? "removeClass" : "addClass"]("gray");
 			topicInputs.attr("disabled", !this.checked);
@@ -88,14 +82,12 @@
 </script>
  
 <article class="bce-regis">
-
 <%
 String mensaje ="";
 if(session.getAttribute("lstaAnexo") != null){
 List<AnexoWeb> lstClientes = (List<AnexoWeb>)session.
 getAttribute("lstaAnexo");
 AnexoWeb   anexo = lstClientes.get(0) ;
-
 if( "EXISTE".equals(anexo.getCodAnexo())){
 mensaje="El Nro. Administrativo ya esta registrado";
 HttpSession sesion = request.getSession();
@@ -129,7 +121,6 @@ if(mensaje!=null){%>
 HttpSession sesion = request.getSession();
 sesion.setMaxInactiveInterval(300);
 %>
-
 <form class="cmxform" name="bce-form" id="bce-form" action="AnexoWeb?a=insertar" method="post" onsubmit="refresh();" >
 <br clear="all">
 <fieldset>
@@ -138,7 +129,6 @@ sesion.setMaxInactiveInterval(300);
 <Label for="TxtCodAnexo">Nro. Administrativo</Label>
 <input type="text" name="TxtCodAnexo" ID="TxtCodAnexo"  value="<%=anexo.getCodAnexo()%>" readonly>
 </p>
-
 <p>
 <Label for="TxtApelidos">Apellidos:</Label>
 <input type="text"  name="TxtApelidos" ID="TxtApelidos"  value="<%=anexo.getApellidos()%>" autocomplete="off" Title="Escribe su apellido paterno y materno" >

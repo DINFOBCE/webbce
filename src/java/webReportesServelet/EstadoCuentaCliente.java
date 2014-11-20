@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -18,18 +19,24 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 
-@WebServlet(name = "EstadoCuentaCliente", urlPatterns = {"/reportes_pag/EstadoCuentaCliente"})
+@WebServlet(name = "EstadoCuentaCliente", urlPatterns = {"/EstadoCuentaCliente"})
 public class EstadoCuentaCliente extends HttpServlet{
     ConexionSql con;
     Connection cn;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-String CodAnexo = request.getParameter("id");
-response.setContentType("application/pdf");
-   try
+  HttpSession session = request.getSession(true);
+
+ if(session.getAttribute("CodAnexo").toString()!=null){
+      String CodAnexo = session.getAttribute("CodAnexo").toString();
+      try
    {
      con = new ConexionSql();
             cn = con.getConexion();
+ response.setHeader ("Content-disposition", "inline; filename=EstadoCuentaCliente_"+CodAnexo+".pdf");
+response.setHeader ("Cache-Control", "max-age=30");
+response.setHeader ("Pragma", "No-cache");
+response.setDateHeader ("Expires", 0);     
   ServletOutputStream out = response.getOutputStream();
 JasperReport reporte = (JasperReport) JRLoader.loadObject(getServletContext().getRealPath("reportes/ECC.jasper"));
 Map parametros = new HashMap();
@@ -48,6 +55,10 @@ out.close();
    }finally{
   con.cerrarConexion(cn);
   }
+ }else{
+     response.sendRedirect("/webbce/");
+ }
+  
       }
 @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException

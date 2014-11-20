@@ -2,8 +2,7 @@
 <%@page import="java.util.List"%>
 <% 
  if( session.getAttribute("Admin") != null){
-    
-    if(session.getAttribute("lstaAnexo_deta") != null)
+        if(session.getAttribute("lstaAnexo_deta") != null)
     {
 List<AnexoWeb> lstaAnexo_deta = (List<AnexoWeb>)session.
 getAttribute("lstaAnexo_deta");

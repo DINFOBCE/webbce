@@ -11,6 +11,7 @@ public class LoginBean {
     private String dni;
     public boolean valid;
     public String ms;
+    private  String S_CodAnexo;
 
     public String getMs() {
         return ms;
@@ -74,6 +75,14 @@ public class LoginBean {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public String getS_CodAnexo() {
+        return S_CodAnexo;
+    }
+
+    public void setS_CodAnexo(String S_CodAnexo) {
+        this.S_CodAnexo = S_CodAnexo;
     }
 
 }

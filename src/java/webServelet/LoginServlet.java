@@ -30,11 +30,10 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 			if(user.isValid())
 			{
 			HttpSession session = request.getSession(true);
-				session.setAttribute("NomAnexo",user.getNomAnexo());
-                                 request.setAttribute("NomAnexo",user.getNomAnexo());
-                                  session.setAttribute("CodAnexo",user.getCodAnexo());
-                                 request.setAttribute("CodAnexo",user.getCodAnexo());
+			session.setAttribute("NomAnexo",user.getNomAnexo());
+                         session.setAttribute("CodAnexo",user.getCodAnexo());
                               session.removeAttribute("ms");
+                              user.setS_CodAnexo(session.getAttribute("CodAnexo").toString());
 				response.sendRedirect("/webbce");
 			}else{
                         HttpSession session = request.getSession(true);
@@ -49,9 +48,6 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 		}
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}

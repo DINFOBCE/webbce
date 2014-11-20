@@ -62,8 +62,6 @@
 
 			}
 		});
-
-		// propose username by combining first- and lastname
 		$("#username").focus(function() {
 			var firstname = $("#firstname").val();
 			var lastname = $("#lastname").val();
@@ -71,14 +69,10 @@
 				this.value = firstname + "." + lastname;
 			}
 		});
-
-		//code to hide topic selection, disable for demo
 		var newsletter = $("#newsletter");
-		// newsletter topics are optional, hide at first
 		var inital = newsletter.is(":checked");
 		var topics = $("#newsletter_topics")[inital ? "removeClass" : "addClass"]("gray");
 		var topicInputs = topics.find("input").attr("disabled", !inital);
-		// show when newsletter is checked
 		newsletter.click(function() {
 			topics[this.checked ? "removeClass" : "addClass"]("gray");
 			topicInputs.attr("disabled", !this.checked);
@@ -94,7 +88,7 @@ List<AnexoWeb> lstaAnexo_deta = (List<AnexoWeb>)session.
 getAttribute("lstaAnexo_deta");
 AnexoWeb   anexo = lstaAnexo_deta.get(0) ;
 HttpSession sesion = request.getSession();
-sesion.setMaxInactiveInterval(120);    
+sesion.setMaxInactiveInterval(100);    
 %>
 
 <form class="cmxform" name="bce-form" id="bce-form" action="AnexoWeb?a=actualizar" method="post"  >
@@ -155,24 +149,15 @@ sesion.setMaxInactiveInterval(120);
 </p>
 </fieldset>
 </form>
-<%
-if( session.getAttribute("sucess") == "0" )
-{%>
+<%if( session.getAttribute("sucess") == "0" ){%>
 <p class="bce_error">    ${msgPostOperacion}   </p>
-<%
-}else if(session.getAttribute("sucess") == "1")
-{%>
+<%}else if(session.getAttribute("sucess") == "1"){%>
 <p class="bce-success">    ${msgPostOperacion}   </p>
-<%}
-}else if(session.getAttribute("CodAnexo")== null || session.getAttribute("sucess")== null){
-  %>
+<%}}else if(session.getAttribute("CodAnexo")== null || session.getAttribute("sucess")== null){  %>
    <script>window.location="/webbce";</script>
-  <%
-    }
-%>
+  <%}%>
 <br clear="all">
 </article>
-
 </body>
 </html>
 
