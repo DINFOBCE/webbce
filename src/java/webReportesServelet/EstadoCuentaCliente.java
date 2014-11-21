@@ -18,7 +18,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
-
 @WebServlet(name = "EstadoCuentaCliente", urlPatterns = {"/EstadoCuentaCliente"})
 public class EstadoCuentaCliente extends HttpServlet{
     ConexionSql con;
@@ -32,7 +31,7 @@ public class EstadoCuentaCliente extends HttpServlet{
       try
    {
      con = new ConexionSql();
-            cn = con.getConexion();
+     cn = con.getConexion();
  response.setHeader ("Content-disposition", "inline; filename=EstadoCuentaCliente_"+CodAnexo+".pdf");
 response.setHeader ("Cache-Control", "max-age=30");
 response.setHeader ("Pragma", "No-cache");
@@ -71,7 +70,4 @@ out.close();
     {
         processRequest(request, response);
     }
-
-   
-    
 }

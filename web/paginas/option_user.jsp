@@ -5,5 +5,5 @@ function EstadoCuentaCliente() {
 </script>
 <ul>
 <li> <a href="javascript:;"  onclick="EstadoCuentaCliente()" >Ver Estado Cuenta</a></li>
-<li> <a href="AnexoWeb?a=listar&id=<%=session.getAttribute("CodAnexo")%>" >Modificar Mis Datos</a></li>
+<li> <a href="AnexoWeb?a=listar" >Modificar Mis Datos</a></li>
 </ul>

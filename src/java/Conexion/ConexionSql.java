@@ -18,7 +18,7 @@ public class ConexionSql {
                     e.getMessage());
         }
         try{
-            url="jdbc:sqlserver://192.168.2.10;databaseName=BCEData";
+            url="jdbc:sqlserver://192.168.2.18;databaseName=BCEData";
             usuario="sa";
             contrasena="";
             con=DriverManager.getConnection(url,usuario,contrasena);

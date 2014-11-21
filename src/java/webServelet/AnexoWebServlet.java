@@ -245,8 +245,15 @@ public class AnexoWebServlet extends HttpServlet {
     protected void listar(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
         logger.info("listar");
-        String CodAnexo = request.getParameter("id");
-        String opt = request.getParameter("opt");
+        String CodAnexo ;
+        sesion = request.getSession(true);
+        if(sesion.getAttribute("CodAnexo").toString().toString()!=null)
+        {
+            CodAnexo = sesion.getAttribute("CodAnexo").toString();
+        }else{
+            CodAnexo=request.getParameter("id");
+        }
+            String opt = request.getParameter("opt");
         try {
             sesion = request.getSession();
             sesion.removeAttribute("lstaAnexo_deta");
