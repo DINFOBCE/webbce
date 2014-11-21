@@ -7,7 +7,6 @@
 List<AnexoWeb> lstaAnexo_deta = (List<AnexoWeb>)session.
 getAttribute("lstaAnexo_deta");
 AnexoWeb   anexo = lstaAnexo_deta.get(0) ;
-
 HttpSession sesion = request.getSession();
 sesion.setMaxInactiveInterval(60);     
   %>
@@ -79,9 +78,9 @@ sesion.setMaxInactiveInterval(60);
 </table>
 </fieldset>
  <br clear="all"><br clear="all"> 
-  <p>
-      NOTA: Los datos registrados en la parte superior le servirán como evidencia del registro, cualquier cambio de datos comuníquese con departamento de CREDITO.
-  </p>
+<p>
+  <b> NOTA:</b> Los datos registrados en la parte superior le servirán como<br/> evidencia del registro, cualquier cambio de datos comuníquese <br/>con departamento de CREDITO.
+     </p>
   <p></p>  
   </div>
   <br clear="all">

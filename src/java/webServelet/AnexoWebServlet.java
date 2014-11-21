@@ -124,7 +124,6 @@ public class AnexoWebServlet extends HttpServlet {
 
             anexoWebService = new AnexoWebServiceImp();
             flgOperacion = anexoWebService.insertar(anexo);
-            // reads SMTP server setting from web.xml file
             ServletContext context = getServletContext();
             host = context.getInitParameter("host");
             port = context.getInitParameter("port");
@@ -149,8 +148,7 @@ public class AnexoWebServlet extends HttpServlet {
                 sucess = "1";
                 mensaje = "El  usuario se registró correctamente, Sus datos han sido enviados a su correo registrado";
                 Admin = CodAnexo;
-                sesion.removeAttribute("lstaAnexo");
-            } else {
+                 } else {
                 sucess = "0";
                 mensaje = "Error al registrar usuario intente nuevamente";
             }
@@ -241,7 +239,6 @@ public class AnexoWebServlet extends HttpServlet {
         }
 
     }
-
     protected void listar(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
         logger.info("listar");
@@ -265,15 +262,17 @@ public class AnexoWebServlet extends HttpServlet {
             List<AnexoWeb> lstaAnexo_deta = anexoWebService.listar(CodAnexo);
             if (lstaAnexo_deta.size() > 0) {
                 sesion.setAttribute("lstaAnexo_deta", lstaAnexo_deta);
-            } else {
+                   } else {
                 mensaje = "Datos incorrectos";
             }
             sesion.setAttribute("msgListado", mensaje);
             if ("lst_deta".equals(opt)) {
+                sesion.setMaxInactiveInterval(30);
                 response.sendRedirect("/webbce/?content=registro-detalle");
             } else {
+                sesion.setMaxInactiveInterval(120);
                 response.sendRedirect("/webbce/?content=modificar-datos-personales");
-            }
+                 }
         } catch (Exception e) {
             logger.error("listar: " + e.getMessage());
         }

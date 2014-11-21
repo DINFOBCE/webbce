@@ -54,8 +54,6 @@ out.close();
    }finally{
   con.cerrarConexion(cn);
   }
- }else{
-     response.sendRedirect("/webbce/");
  }
   
       }
