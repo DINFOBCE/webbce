@@ -30,11 +30,8 @@ for (int i=0;i<listNoticia.size(); i++){
         LinkedList<P_Imagenes> listimgnoti = ListarImg.getImgNoticias(noticia.getIdnoticias());
         for (int x=0;x<listimgnoti.size(); x++){
             P_Imagenes imgacti = listimgnoti.get(x);%>
-<article class="article">
-<figure><a href="#<%=imgacti.getIdimagenes()%>" title=""><img src="<%=imgacti.getImg()%>" alt=""></a></figure></article>
-<a href="#"><div id="<%=imgacti.getIdimagenes()%>" class="background ">
-<img src="<%=imgacti.getImg()%>" alt="<%=imgacti.getTitulo()%>">
- </div></a><%}%><%}%>
+<article class="article"><figure><a href="<%=imgacti.getImg()%>" rel="prettyPhoto" title="<%=imgacti.getTitulo()%>"><span class="overlay zoom"></span><img src="<%=imgacti.getImg()%>" alt=""></a></figure></article>
+<%}%><%}%>
         <blockquote>NUESTRAS ACTIVIDADES</blockquote>    
           <%
      LinkedList<P_Actividad> listActividad = ListarActividades.getActividades("0");
@@ -47,11 +44,8 @@ for (int i=0;i<listActividad.size(); i++){
         LinkedList<P_Imagenes> listimgacti = ListarImg.getImgActividades(actividades.getIdactividades());
         for (int x=0;x<listimgacti.size(); x++){
             P_Imagenes imgacti = listimgacti.get(x);%>
-<article class="article">
-<figure><a href="#<%=imgacti.getIdimagenes()%>" title=""><img src="<%=imgacti.getImg()%>" alt=""></a></figure></article>
-<a href="#"><div id="<%=imgacti.getIdimagenes()%>" class="background ">
-<img src="<%=imgacti.getImg()%>" alt="<%=imgacti.getTitulo()%>">
- </div></a><%}%>
+<article class="article"><figure><a href="<%=imgacti.getImg()%>" rel="prettyPhoto" title="<%=imgacti.getTitulo()%>"><span class="overlay zoom"></span><img src="<%=imgacti.getImg()%>" alt=""></a></figure></article>
+<%}%>
  <br clear="all">
  <a href="<%=actividades.getUrl()%>" class="bce-button" target="_blank">Ver mas...</a>
 <%}%>

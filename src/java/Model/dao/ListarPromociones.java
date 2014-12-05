@@ -25,6 +25,7 @@ private static Connection cn;
                 P_Promociones proOfer = new P_Promociones();
                 proOfer.setIdpromo_oferta(rs.getInt("idpromo_oferta"));
                 proOfer.setTitulo(rs.getString("titulo"));
+                proOfer.setImg(rs.getString("img")); 
                 proOfer.setNombre(rs.getString("nombre"));
                 proOfer.setValido(rs.getString("valido"));
                 proOfer.setDescripcion(rs.getString("descripcion"));
@@ -57,6 +58,7 @@ cn=con.getCn();
 
                 proOfer.setIdpromo_oferta(rs.getInt("idpromo_oferta"));
                 proOfer.setTitulo(rs.getString("titulo"));
+                proOfer.setImg(rs.getString("img")); 
                 proOfer.setNombre(rs.getString("nombre"));
                 proOfer.setValido(rs.getString("valido"));
                 proOfer.setDescripcion(rs.getString("descripcion"));

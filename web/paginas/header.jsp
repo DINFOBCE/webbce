@@ -18,10 +18,15 @@
 <!--[if lte IE 7]><link rel="stylesheet" href="style.ie7.css" media="screen" /><![endif]-->
 <link rel="stylesheet" href="css/style.responsive.css" media="all"/>
 <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu&amp;subset=latin"/>
-<link rel="stylesheet" type="text/css" href="css/bce_style.css"/>
+<link href="css/bce_style.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" type="text/css" media="screen" href="css/prettyPhoto.css"  />
 <script src="js/jquery.js"></script>
  <script src="js/script.js"></script>
 <script src="js/script.responsive.js"></script>
+<script type="text/javascript" src="js/jquery.jcarousel.js"></script>
+<script type="text/javascript" src="js/jquery.prettyPhoto.js"></script>
+<script type="text/javascript" src="js/jquery.superbgimage.min.js"></script>
+
 <script src="js/validar.js"></script>
 <script>
     jQuery(function($) {

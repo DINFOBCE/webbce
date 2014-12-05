@@ -1,6 +1,6 @@
 <script>
 function EstadoCuentaCliente() {
- window.open("EstadoCuentaCliente", "_blank", "toolbar=no, scrollbars=yes, resizable=yes, top=80, left=80, width=850, height=650");
+ window.open("EstadoCuentaCliente", "_blank", "toolbar=no, scrollbars=yes, resizable=yes, top=10, left=180, width=850, height=650");
 }
 </script>
 <ul>

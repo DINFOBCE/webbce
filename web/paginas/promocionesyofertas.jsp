@@ -17,6 +17,7 @@
                <h4><%=PO.getNombre()%></h4>
             <p><%=PO.getDescripcion()%></p>
             <p> <b><%=PO.getValido()%></b> </p>
+             <img src="<%=PO.getImg()%>" width="100" height="100" />
             <a href="<%=PO.getUrl()%>" target="_blank">Ver mas...</a>
         </div>
         <% } else {%>
@@ -25,9 +26,26 @@
                <h4><%=PO.getNombre()%></h4>
             <p><%=PO.getDescripcion()%></p>
             <p> <b><%=PO.getValido()%></b> </p>
+            <img src="<%=PO.getImg()%>" width="100" height="100" />
             <a href="<%=PO.getUrl()%>" target="_blank">Ver mas...</a>
         </div>    
     </div>  
     <%}%>
     <%}%>
-</div>       
+</div> 
+<BR/>
+<h2>OFERTAS Y PROMOCIÓNES</h2>
+    <div class="carousel">
+        <div id="carousel-scroll"><a href="#" id="prev" title="Anterio">Prev</a><a href="#" id="next" title="Siguiente">Sig</a></div>
+      <ul>
+    <%
+        LinkedList<P_Promociones> lista = ListarPromociones.getPromoOfer();
+        for (int a = 0; a < lista.size(); a++) {
+            P_Promociones P = lista.get(a);
+            
+    %>
+<li><a href="<%=P.getImg()%>" rel="prettyPhoto" title="<%=P.getTitulo()%>"><span class="overlay zoom"></span><img src="<%=P.getImg()%>" alt="" /></a></li>
+ <%}%>
+ </ul>
+    </div>
+ 

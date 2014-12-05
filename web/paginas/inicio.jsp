@@ -51,6 +51,7 @@ for (int a=0;a<lista_p.size(); a++){
 <h4><%=PO.getNombre()%></h4>
 <p><%=PO.getDescripcion()%></p>
 <p> <b><%=PO.getValido()%> </b></p>
+ <img src="<%=PO.getImg()%>" width="200" height="200" />
 <p><a href="?promocionesyofertas=promocionesyofertas#promooferta<%=PO.getIdpromo_oferta()%>" class="bce-button">Ver Mas.. .</a></p>
 </div>
 <% }else {%>
@@ -59,6 +60,7 @@ for (int a=0;a<lista_p.size(); a++){
 <h4><%=PO.getNombre()%></h4>
 <p><%=PO.getDescripcion()%></p>
 <p> <b><%=PO.getValido()%> </b></p>
+ <img src="<%=PO.getImg()%>" width="200" height="200" />
 <p><a href="?promocionesyofertas=promocionesyofertas#promooferta<%=PO.getIdpromo_oferta()%>" class="bce-button">Ver Mas.. .</a></p>
 </div>    
 </div>  
@@ -68,5 +70,6 @@ for (int a=0;a<lista_p.size(); a++){
 </div>
 
 </div>
+
 <!--</div>-->
 <!-- end dinamico -->
