@@ -51,7 +51,9 @@ for (int a=0;a<lista_p.size(); a++){
 <h4><%=PO.getNombre()%></h4>
 <p><%=PO.getDescripcion()%></p>
 <p> <b><%=PO.getValido()%> </b></p>
- <img src="<%=PO.getImg()%>" width="200" height="200" />
+<a href="<%=PO.getImg()%>" rel="prettyPhoto" title="<%=PO.getNombre()%>">
+<span class="overlay zoom"></span><img src="<%=PO.getImg()%>" width="180" height="180" /></a>
+<br clear="all"/>
 <p><a href="?promocionesyofertas=promocionesyofertas#promooferta<%=PO.getIdpromo_oferta()%>" class="bce-button">Ver Mas.. .</a></p>
 </div>
 <% }else {%>
@@ -60,7 +62,9 @@ for (int a=0;a<lista_p.size(); a++){
 <h4><%=PO.getNombre()%></h4>
 <p><%=PO.getDescripcion()%></p>
 <p> <b><%=PO.getValido()%> </b></p>
- <img src="<%=PO.getImg()%>" width="200" height="200" />
+<a href="<%=PO.getImg()%>" rel="prettyPhoto" title="<%=PO.getNombre()%>">
+<span class="overlay zoom"></span><img src="<%=PO.getImg()%>" width="180" height="180" /></a>
+<br clear="all"/>
 <p><a href="?promocionesyofertas=promocionesyofertas#promooferta<%=PO.getIdpromo_oferta()%>" class="bce-button">Ver Mas.. .</a></p>
 </div>    
 </div>  

@@ -20,7 +20,7 @@ public class ListarImg {
 cn = con.getCn();
             cn.setAutoCommit(false);
 
-            ps = cn.prepareStatement("{call Sp_Imagenes('TIENDA')}");
+            ps = cn.prepareStatement("{call Sp_Imagenes('inicio')}");
             rs = ps.executeQuery();
             while (rs.next()) {
                 P_Imagenes img = new P_Imagenes();

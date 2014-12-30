@@ -17,8 +17,9 @@
                <h4><%=PO.getNombre()%></h4>
             <p><%=PO.getDescripcion()%></p>
             <p> <b><%=PO.getValido()%></b> </p>
-             <img src="<%=PO.getImg()%>" width="100" height="100" />
-            <a href="<%=PO.getUrl()%>" target="_blank">Ver mas...</a>
+            <a href="<%=PO.getImg()%>" rel="prettyPhoto" title="<%=PO.getNombre()%>">
+                <span class="overlay zoom"></span><img src="<%=PO.getImg()%>" width="180" height="180" /></a>
+           <br clear="all"/>  <a href="<%=PO.getUrl()%>" target="_blank">Ver mas...</a>
         </div>
         <% } else {%>
         <div class="bce-layout-cell layout-item-old-2" style="width: 50%">
@@ -26,8 +27,9 @@
                <h4><%=PO.getNombre()%></h4>
             <p><%=PO.getDescripcion()%></p>
             <p> <b><%=PO.getValido()%></b> </p>
-            <img src="<%=PO.getImg()%>" width="100" height="100" />
-            <a href="<%=PO.getUrl()%>" target="_blank">Ver mas...</a>
+            <a href="<%=PO.getImg()%>" rel="prettyPhoto" title="<%=PO.getNombre()%>">
+                <span class="overlay zoom"></span><img src="<%=PO.getImg()%>" width="180" height="180" /></a>
+                <br clear="all"/> <a href="<%=PO.getUrl()%>" target="_blank">Ver mas...</a>
         </div>    
     </div>  
     <%}%>
